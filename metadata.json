@@ -1,0 +1,6 @@
+{
+  "name": "Hotel Management System",
+  "description": "Comprehensive hotel management system with dynamic room pricing, facility reservations, real-time availability tracking, multilingual user dashboard, and admin operations portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
