@@ -21,6 +21,7 @@ export const translations: Record<Language, Record<string, string>> = {
     dashboard: 'Dashboard',
     roomBooking: 'Room Booking',
     facilityBooking: 'Facility Booking',
+    royalArtifacts: '👑 Royal Collections',
     realTimeAvailability: 'Real-Time Availability',
     myBookings: 'My Bookings',
     profile: 'Profile',

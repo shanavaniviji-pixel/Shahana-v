@@ -53,6 +53,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, openAiC
         ]
       : [
           { id: 'dashboard', label: t('dashboard') },
+          { id: 'royalArtifacts', label: t('royalArtifacts') || '👑 Royal Collections' },
           { id: 'roomBooking', label: t('roomBooking') },
           { id: 'facilityBooking', label: t('facilityBooking') },
           { id: 'realTimeAvailability', label: t('realTimeAvailability') },

@@ -14,6 +14,12 @@ import {
   TrendingUp,
   Receipt,
   Bed,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Maximize2,
+  Layers,
 } from 'lucide-react';
 
 export const RoomBookingPage: React.FC = () => {
@@ -35,6 +41,10 @@ export const RoomBookingPage: React.FC = () => {
   const [guestsCount, setGuestsCount] = useState<number>(2);
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+
+  // Gallery Modal State
+  const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
+  const [galleryImageIdx, setGalleryImageIdx] = useState<number>(0);
 
   // Modal checkout state
   const [guestName, setGuestName] = useState('Rajesh Sharma');
@@ -183,20 +193,32 @@ export const RoomBookingPage: React.FC = () => {
           return (
             <div
               key={room.roomId}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
             >
               <div>
-                {/* Room Photo Header */}
-                <div className="relative h-48 overflow-hidden bg-slate-100">
+                {/* Room Photo Header with Gallery Trigger */}
+                <div
+                  onClick={() => {
+                    setGalleryRoom(room);
+                    setGalleryImageIdx(0);
+                  }}
+                  className="relative h-52 overflow-hidden bg-slate-950 cursor-pointer group/img"
+                >
                   <img
-                    src={room.image}
+                    src={(room.images && room.images[0]) || room.image}
                     alt={room.roomType}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700 opacity-90 group-hover/img:opacity-100"
                   />
-                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
-                    Room {room.roomNumber}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20" />
+
+                  {/* Room Number Badge */}
+                  <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md text-amber-400 border border-amber-500/30 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center space-x-1">
+                    <Bed className="w-3.5 h-3.5" />
+                    <span>Suite {room.roomNumber}</span>
                   </div>
+
+                  {/* Status Badge */}
                   <div className="absolute top-3 right-3">
                     <span
                       className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
@@ -207,6 +229,18 @@ export const RoomBookingPage: React.FC = () => {
                     >
                       {room.status}
                     </span>
+                  </div>
+
+                  {/* Photo Gallery Button Overlay */}
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                    <div className="bg-slate-950/85 backdrop-blur-md text-white border border-white/20 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1.5 shadow-lg group-hover/img:bg-amber-500 group-hover/img:text-slate-950 transition-all">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Explore Gallery ({(room.images && room.images.length) || 4} Photos)</span>
+                    </div>
+
+                    <div className="bg-white/20 backdrop-blur-md text-white p-1.5 rounded-xl hover:bg-white/40 transition-all">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </div>
                   </div>
                 </div>
 
@@ -282,6 +316,169 @@ export const RoomBookingPage: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Full Suite Photo Explorer Modal */}
+      {galleryRoom && (
+        <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="bg-slate-900 border border-amber-500/30 rounded-3xl max-w-4xl w-full text-white shadow-2xl overflow-hidden relative flex flex-col my-auto">
+            
+            {/* Modal Top Header */}
+            <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-bold">
+                  <Camera className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+                      Suite {galleryRoom.roomNumber} Photo Gallery
+                    </span>
+                    <span className="text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-full font-bold">
+                      {((galleryRoom.images && galleryRoom.images.length) || 4)} High-Res Views
+                    </span>
+                  </div>
+                  <h2 className="text-lg font-bold text-white font-serif">{galleryRoom.roomType}</h2>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setGalleryRoom(null)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Main Image Stage */}
+            <div className="relative bg-black h-[320px] sm:h-[420px] flex items-center justify-center overflow-hidden">
+              {(() => {
+                const galleryList = (galleryRoom.images && galleryRoom.images.length > 0)
+                  ? galleryRoom.images
+                  : [galleryRoom.image];
+                const activeImgUrl = galleryList[galleryImageIdx % galleryList.length];
+
+                const imageCaptions = [
+                  'Photo 1 • Master Bedroom & Suite Architecture',
+                  'Photo 2 • Scenic Balcony & Estate Panorama',
+                  'Photo 3 • En-suite Marble Bath & Spa Amenities',
+                  'Photo 4 • Executive Workstation & Lounge Area',
+                ];
+
+                return (
+                  <>
+                    <img
+                      src={activeImgUrl}
+                      alt={`${galleryRoom.roomType} view ${galleryImageIdx + 1}`}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-contain transition-all duration-300"
+                    />
+
+                    {/* Navigation Arrows */}
+                    {galleryList.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setGalleryImageIdx((prev) => (prev - 1 + galleryList.length) % galleryList.length)}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-slate-950/80 hover:bg-amber-500 text-white hover:text-slate-950 border border-white/20 transition-all cursor-pointer shadow-xl"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => setGalleryImageIdx((prev) => (prev + 1) % galleryList.length)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-slate-950/80 hover:bg-amber-500 text-white hover:text-slate-950 border border-white/20 transition-all cursor-pointer shadow-xl"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
+
+                    {/* Photo Caption Label */}
+                    <div className="absolute bottom-3 left-3 bg-slate-950/90 border border-amber-500/30 text-amber-200 text-xs px-3 py-1.5 rounded-xl backdrop-blur-md font-semibold flex items-center space-x-2 shadow-lg">
+                      <Camera className="w-3.5 h-3.5 text-amber-400" />
+                      <span>{imageCaptions[galleryImageIdx % imageCaptions.length]}</span>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* Thumbnail Gallery Strip */}
+            <div className="p-4 bg-slate-950 border-t border-b border-slate-800 flex items-center justify-center space-x-3 overflow-x-auto">
+              {((galleryRoom.images && galleryRoom.images.length > 0)
+                ? galleryRoom.images
+                : [galleryRoom.image]
+              ).map((imgUrl, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setGalleryImageIdx(idx)}
+                  className={`relative w-20 h-14 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                    galleryImageIdx === idx
+                      ? 'border-amber-500 scale-105 shadow-md shadow-amber-500/20'
+                      : 'border-slate-800 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img
+                    src={imgUrl}
+                    alt={`Thumbnail ${idx + 1}`}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  {galleryImageIdx === idx && (
+                    <div className="absolute inset-0 bg-amber-500/10" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Suite Facilities & Direct Booking Footer */}
+            <div className="p-5 bg-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="space-y-2 max-w-xl">
+                <div className="flex items-center space-x-2 text-xs font-bold text-amber-400">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Suite Facilities & Highlights</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {galleryRoom.facilities.map((fac) => (
+                    <span
+                      key={fac}
+                      className="bg-slate-800 text-slate-300 text-[11px] px-2.5 py-1 rounded-lg border border-slate-700 font-medium"
+                    >
+                      ✓ {fac}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4 shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-800 pt-3 md:pt-0">
+                <div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Current Rate</span>
+                  <span className="text-2xl font-black text-amber-400 font-serif">
+                    ₹{galleryRoom.currentPrice.toLocaleString()}
+                  </span>
+                  <span className="text-xs text-slate-400"> / night</span>
+                </div>
+
+                <button
+                  disabled={galleryRoom.status === 'occupied' || galleryRoom.status === 'reserved'}
+                  onClick={() => {
+                    const roomToBook = galleryRoom;
+                    setGalleryRoom(null);
+                    setSelectedRoom(roomToBook);
+                  }}
+                  className={`px-5 py-3 rounded-xl font-extrabold text-xs shadow-lg transition-all flex items-center space-x-2 cursor-pointer ${
+                    galleryRoom.status === 'occupied' || galleryRoom.status === 'reserved'
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      : 'bg-amber-500 hover:bg-amber-400 text-slate-950 hover:scale-105'
+                  }`}
+                >
+                  <Bed className="w-4 h-4" />
+                  <span>{galleryRoom.status === 'available' ? `Book Suite ${galleryRoom.roomNumber}` : 'Reserved'}</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* Booking Checkout Modal */}
       {selectedRoom && !confirmedBooking && (

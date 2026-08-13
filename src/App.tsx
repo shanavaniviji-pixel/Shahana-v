@@ -11,6 +11,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { AuthPage } from './components/AuthPage';
 import { AIConciergeModal } from './components/AIConciergeModal';
 import { InvoiceModal } from './components/InvoiceModal';
+import { ArtifactBookingEngine } from './components/ArtifactBookingEngine';
 
 function MainApp() {
   const { currentUser, isLoggedIn, activeInvoice, setActiveInvoice } = useHotel();
@@ -48,6 +49,13 @@ function MainApp() {
     }
 
     // Guest Role Views (Admin Dashboard is strictly inaccessible)
+    if (activeTab === 'royalArtifacts') {
+      return (
+        <ArtifactBookingEngine
+          onSelectSuiteToBook={() => setActiveTab('roomBooking')}
+        />
+      );
+    }
     if (activeTab === 'roomBooking') {
       return <RoomBookingPage />;
     }

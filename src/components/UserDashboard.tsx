@@ -13,6 +13,7 @@ import {
   Clock,
   CheckCircle2,
   Receipt,
+  Crown,
 } from 'lucide-react';
 
 interface UserDashboardProps {
@@ -136,6 +137,31 @@ export const UserDashboard: React.FC<UserDashboardProps> = ({ setActiveTab }) =>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Royal Collections "Artifact-to-Suite" Callout Banner */}
+      <div className="bg-gradient-to-r from-amber-950 via-slate-950 to-amber-950 rounded-2xl p-6 text-white border border-amber-500/40 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400 text-amber-300 text-[11px] font-bold">
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span>Interactive Feature Showcase</span>
+          </div>
+          <h3 className="text-xl font-serif font-extrabold text-amber-100">
+            The "Artifact-to-Suite" Royal Booking Engine
+          </h3>
+          <p className="text-xs text-amber-200/80 max-w-2xl leading-relaxed">
+            Explore centuries-old 17th-century Rajputana swords, Maharani emerald chokers, and imperial gold dinnerware in interactive 3D, then <span className="text-amber-300 font-bold">zoom out</span> to reveal and book the exact guarded suite!
+          </p>
+        </div>
+
+        <button
+          onClick={() => setActiveTab('royalArtifacts')}
+          className="shrink-0 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-lg transition-all cursor-pointer hover:scale-105"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Explore Royal Collections</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Dynamic Room Pricing Overview Card (PDF Section 3 & 3.2 requirement) */}

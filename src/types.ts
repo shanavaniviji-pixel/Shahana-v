@@ -23,6 +23,7 @@ export interface Room {
   status: RoomStatus;
   facilities: string[];
   image: string;
+  images?: string[];
   capacity: number; // max guest count
 }
 
